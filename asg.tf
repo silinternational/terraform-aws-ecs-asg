@@ -67,6 +67,7 @@ resource "aws_autoscaling_policy" "up" {
   cooldown               = "${var.policy_cooldown}"
   policy_type            = "SimpleScaling"
   autoscaling_group_name = "${aws_autoscaling_group.asg.name}"
+  count                  = "${var.alarm_actions_enabled ? 1 : 0}"
 }
 
 resource "aws_autoscaling_policy" "down" {
@@ -76,6 +77,7 @@ resource "aws_autoscaling_policy" "down" {
   cooldown               = "${var.policy_cooldown}"
   policy_type            = "SimpleScaling"
   autoscaling_group_name = "${aws_autoscaling_group.asg.name}"
+  count                  = "${var.alarm_actions_enabled ? 1 : 0}"
 }
 
 /*
@@ -92,6 +94,7 @@ resource "aws_cloudwatch_metric_alarm" "scaleUp" {
   period              = "${var.alarm_period}"
   threshold           = "${var.alarm_threshold_up}"
   actions_enabled     = "${var.alarm_actions_enabled}"
+  count               = "${var.alarm_actions_enabled ? 1 : 0}"
   alarm_actions       = ["${aws_autoscaling_policy.up.arn}"]
 
   dimensions {
@@ -110,6 +113,7 @@ resource "aws_cloudwatch_metric_alarm" "scaleDown" {
   period              = "${var.alarm_period}"
   threshold           = "${var.alarm_threshold_down}"
   actions_enabled     = "${var.alarm_actions_enabled}"
+  count               = "${var.alarm_actions_enabled ? 1 : 0}"
   alarm_actions       = ["${aws_autoscaling_policy.down.arn}"]
 
   dimensions {
