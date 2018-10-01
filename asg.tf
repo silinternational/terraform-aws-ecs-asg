@@ -19,6 +19,7 @@ resource "aws_launch_configuration" "lc" {
   iam_instance_profile = "${aws_iam_instance_profile.ecsInstanceProfile.id}"
   security_groups      = ["${var.security_groups}"]
   user_data            = "${var.user_data != "false" ? var.user_data : data.template_file.user_data.rendered}"
+  key_name             = "${var.ssh_key_name}"
 
   root_block_device {
     volume_size = "${var.root_volume_size}"
@@ -241,4 +242,9 @@ variable "alarm_threshold_down" {
 
 variable "alarm_actions_enabled" {
   default = true
+}
+
+variable "ssh_key_name" {
+  default     = ""
+  description = "Name of SSH key pair to use as default (ec2-user) user key"
 }
