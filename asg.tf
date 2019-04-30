@@ -20,6 +20,7 @@ resource "aws_launch_configuration" "lc" {
   security_groups      = ["${var.security_groups}"]
   user_data            = "${var.user_data != "false" ? var.user_data : data.template_file.user_data.rendered}"
   key_name             = "${var.ssh_key_name}"
+  spot_price           = "${var.spot_price}"
 
   root_block_device {
     volume_size = "${var.root_volume_size}"
