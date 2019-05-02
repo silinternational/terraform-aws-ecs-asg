@@ -15,6 +15,7 @@ data "aws_ami" "ecs_ami" {
  * Create ECS cluster
  */
 resource "aws_ecs_cluster" "ecs_cluster" {
+  count = "${var.create_ecs_cluster ? 1 : 0}"
   name = "${var.cluster_name}"
 }
 
@@ -65,9 +66,15 @@ variable "cluster_name" {}
 // Optional:
 
 variable "spot_price" {
-  type = "string"
-  default = ""
+  type        = "string"
+  default     = ""
   description = "(Optional) The price to use for reserving spot instances. Will use on-demand instances if empty."
+}
+
+variable "create_ecs_cluster" {
+  type        = "string"
+  default     = "1"
+  description = "(Optional) A flag if ECS cluster should be created within the module or reference external one by name. (Default: 1)"
 }
 
 variable "ecsInstanceRoleAssumeRolePolicy" {
