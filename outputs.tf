@@ -15,11 +15,11 @@ output "ecs_ami_id" {
 }
 
 output "ecs_cluster_id" {
-  value = "${aws_ecs_cluster.ecs_cluster.id}"
+  value = "${ join("", aws_ecs_cluster.ecs_cluster.*.id) }"
 }
 
 output "ecs_cluster_name" {
-  value = "${aws_ecs_cluster.ecs_cluster.name}"
+  value = "${ join("", aws_ecs_cluster.ecs_cluster.*.name) }"
 }
 
 output "ecs_instance_profile_id" {
