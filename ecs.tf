@@ -64,6 +64,12 @@ variable "cluster_name" {}
 
 // Optional:
 
+variable "spot_price" {
+  type = "string"
+  default = ""
+  description = "(Optional) The price to use for reserving spot instances. Will use on-demand instances if empty."
+}
+
 variable "ecsInstanceRoleAssumeRolePolicy" {
   type = "string"
 
