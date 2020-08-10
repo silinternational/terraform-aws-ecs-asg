@@ -17,7 +17,7 @@ resource "aws_launch_configuration" "lc" {
   name_prefix          = var.cluster_name
   instance_type        = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.ecsInstanceProfile.id
-  security_groups      = [var.security_groups]
+  security_groups      = var.security_groups
   user_data            = var.user_data != "false" ? var.user_data : data.template_file.user_data.rendered
   key_name             = var.ssh_key_name
 
@@ -35,13 +35,13 @@ resource "aws_launch_configuration" "lc" {
  */
 resource "aws_autoscaling_group" "asg" {
   name                      = var.cluster_name
-  vpc_zone_identifier       = [var.subnet_ids]
+  vpc_zone_identifier       = var.subnet_ids
   min_size                  = var.min_size
   max_size                  = var.max_size
   health_check_type         = var.health_check_type
   health_check_grace_period = var.health_check_grace_period
   default_cooldown          = var.default_cooldown
-  termination_policies      = [var.termination_policies]
+  termination_policies      = var.termination_policies
   launch_configuration      = aws_launch_configuration.lc.id
 
   tags = [concat(
