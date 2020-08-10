@@ -15,7 +15,7 @@ data "aws_ami" "ecs_ami" {
  * Create ECS cluster
  */
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "${var.cluster_name}"
+  name = var.cluster_name
 }
 
 /*
@@ -27,13 +27,13 @@ resource "random_id" "code" {
 
 resource "aws_iam_role" "ecsInstanceRole" {
   name               = "ecsInstanceRole-${random_id.code.hex}"
-  assume_role_policy = "${var.ecsInstanceRoleAssumeRolePolicy}"
+  assume_role_policy = var.ecsInstanceRoleAssumeRolePolicy
 }
 
 resource "aws_iam_role_policy" "ecsInstanceRolePolicy" {
   name   = "ecsInstanceRolePolicy-${random_id.code.hex}"
-  role   = "${aws_iam_role.ecsInstanceRole.id}"
-  policy = "${var.ecsInstancerolePolicy}"
+  role   = aws_iam_role.ecsInstanceRole.id
+  policy = var.ecsInstancerolePolicy
 }
 
 /*
@@ -41,18 +41,18 @@ resource "aws_iam_role_policy" "ecsInstanceRolePolicy" {
  */
 resource "aws_iam_role" "ecsServiceRole" {
   name               = "ecsServiceRole-${random_id.code.hex}"
-  assume_role_policy = "${var.ecsServiceRoleAssumeRolePolicy}"
+  assume_role_policy = var.ecsServiceRoleAssumeRolePolicy
 }
 
 resource "aws_iam_role_policy" "ecsServiceRolePolicy" {
   name   = "ecsServiceRolePolicy-${random_id.code.hex}"
-  role   = "${aws_iam_role.ecsServiceRole.id}"
-  policy = "${var.ecsServiceRolePolicy}"
+  role   = aws_iam_role.ecsServiceRole.id
+  policy = var.ecsServiceRolePolicy
 }
 
 resource "aws_iam_instance_profile" "ecsInstanceProfile" {
   name = "ecsInstanceProfile-${random_id.code.hex}"
-  role = "${aws_iam_role.ecsInstanceRole.name}"
+  role = aws_iam_role.ecsInstanceRole.name
 }
 
 /*
