@@ -96,7 +96,7 @@ resource "aws_cloudwatch_metric_alarm" "scaleUp" {
   threshold           = var.alarm_threshold_up
   actions_enabled     = var.alarm_actions_enabled
   count               = var.alarm_actions_enabled ? 1 : 0
-  alarm_actions       = [aws_autoscaling_policy.up.arn]
+  alarm_actions       = [aws_autoscaling_policy.up[0].arn]
 
   dimensions = {
     ClusterName = var.cluster_name
@@ -115,7 +115,7 @@ resource "aws_cloudwatch_metric_alarm" "scaleDown" {
   threshold           = var.alarm_threshold_down
   actions_enabled     = var.alarm_actions_enabled
   count               = var.alarm_actions_enabled ? 1 : 0
-  alarm_actions       = [aws_autoscaling_policy.down.arn]
+  alarm_actions       = [aws_autoscaling_policy.down[0].arn]
 
   dimensions = {
     ClusterName = var.cluster_name
