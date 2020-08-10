@@ -129,12 +129,12 @@ resource "aws_cloudwatch_metric_alarm" "scaleDown" {
 // Required:
 variable "security_groups" {
   description = "List of security groups to place instances into"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "subnet_ids" {
   description = "List of VPC Subnet IDs to place instances into"
-  type        = "list"
+  type        = list(string)
 }
 
 // Optional:
@@ -173,7 +173,7 @@ variable "default_cooldown" {
 }
 
 variable "termination_policies" {
-  type        = "list"
+  type        = list(string)
   default     = ["Default"]
   description = "The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, Default."
 }
@@ -183,7 +183,7 @@ variable "protect_from_scale_in" {
 }
 
 variable "tags" {
-  type        = "list"
+  type        = list(object({ key = string, value = string, propagate_at_launch = bool }))
   description = "List of maps with keys: 'key', 'value', and 'propagate_at_launch'"
 
   default = [
