@@ -65,7 +65,7 @@ variable "cluster_name" {}
 // Optional:
 
 variable "ecsInstanceRoleAssumeRolePolicy" {
-  type = "string"
+  type = string
 
   default = <<EOF
 {
@@ -85,7 +85,7 @@ EOF
 }
 
 variable "ecsInstancerolePolicy" {
-  type = "string"
+  type = string
 
   default = <<EOF
 {
@@ -116,7 +116,7 @@ EOF
 }
 
 variable "ecsServiceRoleAssumeRolePolicy" {
-  type = "string"
+  type = string
 
   default = <<EOF
 {
