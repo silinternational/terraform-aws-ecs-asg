@@ -33,7 +33,7 @@ resource "aws_iam_role" "ecsInstanceRole" {
 resource "aws_iam_role_policy" "ecsInstanceRolePolicy" {
   name   = "ecsInstanceRolePolicy-${random_id.code.hex}"
   role   = aws_iam_role.ecsInstanceRole.id
-  policy = var.ecsInstancerolePolicy
+  policy = var.use_ssm ? var.ecsInstanceroleSsmPolicy : var.ecsInstancerolePolicy
 }
 
 /*
@@ -107,6 +107,63 @@ variable "ecsInstancerolePolicy" {
         "ecr:BatchGetImage",
         "logs:CreateLogStream",
         "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+variable "use_ssm" {
+  default     = false
+  description = "Allow access via AWS Systems Mamager"
+}
+
+variable "ecsInstanceroleSsmPolicy" {
+  type = string
+
+  default = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecs:CreateCluster",
+        "ecs:DeregisterContainerInstance",
+        "ecs:DiscoverPollEndpoint",
+        "ecs:Poll",
+        "ecs:RegisterContainerInstance",
+        "ecs:StartTelemetrySession",
+        "ecs:Submit*",
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "ec2messages:GetMessages",
+          "ssm:ListAssociations",
+          "ssm:ListInstanceAssociations",
+          "ssm:UpdateInstanceInformation",
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "s3:GetEncryptionConfiguration"
       ],
       "Resource": "*"
     }
