@@ -117,7 +117,7 @@ EOF
 
 variable "use_ssm" {
   default     = false
-  description = "Allow access via AWS Systems Mamager"
+  description = "Allow access via AWS Systems Manager"
 }
 
 variable "ecsInstanceroleSsmPolicy" {
