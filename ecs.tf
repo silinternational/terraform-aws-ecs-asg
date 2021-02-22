@@ -33,7 +33,13 @@ resource "aws_iam_role" "ecsInstanceRole" {
 resource "aws_iam_role_policy" "ecsInstanceRolePolicy" {
   name   = "ecsInstanceRolePolicy-${random_id.code.hex}"
   role   = aws_iam_role.ecsInstanceRole.id
-  policy = var.use_ssm ? var.ecsInstanceroleSsmPolicy : var.ecsInstancerolePolicy
+  policy = var.ecsInstancerolePolicy
+}
+
+resource "aws_iam_role_policy" "ecsInstanceRoleSsmPolicy" {
+  count  = var.use_ssm ? 1 : 0
+  role   = aws_iam_role.ecsInstanceRole.id
+  policy = var.ecsInstanceroleSsmPolicy
 }
 
 /*
@@ -127,25 +133,6 @@ variable "ecsInstanceroleSsmPolicy" {
 {
   "Version": "2012-10-17",
   "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecs:CreateCluster",
-        "ecs:DeregisterContainerInstance",
-        "ecs:DiscoverPollEndpoint",
-        "ecs:Poll",
-        "ecs:RegisterContainerInstance",
-        "ecs:StartTelemetrySession",
-        "ecs:Submit*",
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "*"
-    },
     {
       "Effect": "Allow",
       "Action": [
