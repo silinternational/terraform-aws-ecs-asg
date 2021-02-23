@@ -7,7 +7,7 @@ data "aws_ami" "ecs_ami" {
 
   filter {
     name   = "name"
-    values = ["amzn-ami-*-amazon-ecs-optimized"]
+    values = var.use_amazon_linux2 ? ["amzn2-ami-ecs-hvm-2.0.*-x86_64-ebs"] : ["amzn-ami-*-amazon-ecs-optimized"]
   }
 }
 
@@ -85,6 +85,11 @@ variable "app_env" {}
 variable "region" {}
 
 // Optional:
+
+variable "use_amazon_linux2" {
+  default     = false
+  description = "Use Amazon Linux 2 instead of Amazon Linux"
+}
 
 variable "ecsInstanceRoleAssumeRolePolicy" {
   type = string
