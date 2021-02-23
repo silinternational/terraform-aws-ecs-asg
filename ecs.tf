@@ -39,7 +39,17 @@ resource "aws_iam_role_policy" "ecsInstanceRolePolicy" {
 resource "aws_iam_role_policy" "ecsInstanceRoleSsmPolicy" {
   count  = var.use_ssm ? 1 : 0
   role   = aws_iam_role.ecsInstanceRole.id
-  policy = var.ecsInstanceroleSsmPolicy
+  policy = data.template_file.ecs_instance_role_ssm_policy.rendered
+}
+
+data "template_file" "ecs_instance_role_ssm_policy" {
+  template = file("${path.module}/ecsInstanceroleSsmPolicy.json")
+
+  vars = {
+    app_name = var.app_name
+    app_env  = var.app_env
+    region   = var.region
+  }
 }
 
 /*
@@ -67,6 +77,12 @@ resource "aws_iam_instance_profile" "ecsInstanceProfile" {
 
 // Required:
 variable "cluster_name" {}
+
+variable "app_name" {}
+
+variable "app_env" {}
+
+variable "region" {}
 
 // Optional:
 
@@ -124,39 +140,6 @@ EOF
 variable "use_ssm" {
   default     = false
   description = "Allow access via AWS Systems Manager"
-}
-
-variable "ecsInstanceroleSsmPolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-          "ec2messages:GetMessages",
-          "ssm:ListAssociations",
-          "ssm:ListInstanceAssociations",
-          "ssm:UpdateInstanceInformation",
-          "ssmmessages:CreateControlChannel",
-          "ssmmessages:CreateDataChannel",
-          "ssmmessages:OpenControlChannel",
-          "ssmmessages:OpenDataChannel"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-          "s3:GetEncryptionConfiguration"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
 }
 
 variable "ecsServiceRoleAssumeRolePolicy" {

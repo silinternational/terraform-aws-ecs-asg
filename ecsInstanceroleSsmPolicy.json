@@ -1,0 +1,38 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+          "ec2messages:GetMessages",
+          "ssm:ListAssociations",
+          "ssm:ListInstanceAssociations",
+          "ssm:UpdateInstanceInformation",
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+      ],
+      "Resource": [
+        "arn:aws:ec2:${region}:*:instance/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "ssm:resourceTag/app_name": [
+            "${app_name}"
+          ],
+          "ssm:resourceTag/app_env": [
+            "${app_env}"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "s3:GetEncryptionConfiguration"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
