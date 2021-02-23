@@ -46,7 +46,7 @@ resource "aws_autoscaling_group" "asg" {
 
   tags = concat(
     list(
-      map("key", "ecs_cluster", "value", var.cluster_name, "propagate_at_launch", true)
+      map("key", "ecs_cluster", "value", var.cluster_name, "propagate_at_launch", true, "app_name", var.app_name, "app_env", var.app_env)
     ),
     var.tags
   )

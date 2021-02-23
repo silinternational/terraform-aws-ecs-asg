@@ -13,9 +13,7 @@
           "ssmmessages:OpenControlChannel",
           "ssmmessages:OpenDataChannel"
       ],
-      "Resource": [
-        "arn:aws:ec2:${region}:*:instance/*"
-      ],
+      "Resource": "*",
       "Condition": {
         "StringLike": {
           "ssm:resourceTag/app_name": [
