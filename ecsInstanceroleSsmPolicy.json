@@ -13,17 +13,7 @@
           "ssmmessages:OpenControlChannel",
           "ssmmessages:OpenDataChannel"
       ],
-      "Resource": "*",
-      "Condition": {
-        "StringLike": {
-          "ssm:resourceTag/app_name": [
-            "${app_name}"
-          ],
-          "ssm:resourceTag/app_env": [
-            "${app_env}"
-          ]
-        }
-      }
+      "Resource": "*"
     },
     {
       "Effect": "Allow",

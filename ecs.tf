@@ -46,8 +46,6 @@ data "template_file" "ecs_instance_role_ssm_policy" {
   template = file("${path.module}/ecsInstanceroleSsmPolicy.json")
 
   vars = {
-    app_name = var.app_name
-    app_env  = var.app_env
     region   = var.region
   }
 }
@@ -77,10 +75,6 @@ resource "aws_iam_instance_profile" "ecsInstanceProfile" {
 
 // Required:
 variable "cluster_name" {}
-
-variable "app_name" {}
-
-variable "app_env" {}
 
 variable "region" {}
 
