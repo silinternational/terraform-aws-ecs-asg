@@ -50,16 +50,6 @@ resource "aws_autoscaling_group" "asg" {
         "key"                 = "ecs_cluster"
         "value"               = var.cluster_name
         "propagate_at_launch" = true
-      },
-      {
-        "key"                 = "app_name"
-        "value"               = var.app_name
-        "propagate_at_launch" = true
-      },
-      {
-        "key"                 = "app_env"
-        "value"               = var.app_env
-        "propagate_at_launch" = true
       }
     ],
     var.tags
