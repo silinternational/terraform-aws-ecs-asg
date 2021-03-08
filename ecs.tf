@@ -36,6 +36,20 @@ resource "aws_iam_role_policy" "ecsInstanceRolePolicy" {
   policy = var.ecsInstancerolePolicy
 }
 
+resource "aws_iam_role_policy" "ecsInstanceRoleSsmPolicy" {
+  count  = var.use_ssm ? 1 : 0
+  role   = aws_iam_role.ecsInstanceRole.id
+  policy = data.template_file.ecs_instance_role_ssm_policy.rendered
+}
+
+data "template_file" "ecs_instance_role_ssm_policy" {
+  template = file("${path.module}/ecsInstanceroleSsmPolicy.json")
+
+  vars = {
+    region   = var.region
+  }
+}
+
 /*
  * Create ECS IAM Service Role and Policy
  */
@@ -61,6 +75,8 @@ resource "aws_iam_instance_profile" "ecsInstanceProfile" {
 
 // Required:
 variable "cluster_name" {}
+
+variable "region" {}
 
 // Optional:
 
@@ -118,6 +134,11 @@ variable "ecsInstancerolePolicy" {
   ]
 }
 EOF
+}
+
+variable "use_ssm" {
+  default     = false
+  description = "Allow access via AWS Systems Manager"
 }
 
 variable "ecsServiceRoleAssumeRolePolicy" {
