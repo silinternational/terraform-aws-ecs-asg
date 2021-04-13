@@ -7,7 +7,7 @@ data "aws_ami" "ecs_ami" {
 
   filter {
     name   = "name"
-    values = var.use_amazon_linux2 ? ["amzn2-ami-ecs-hvm-2.0.*-x86_64-ebs"] : ["amzn-ami-*-amazon-ecs-optimized"]
+    values = var.use_amazon_linux2 ? ["amzn2-ami-ecs-hvm-2.0.*-${var.ami_architecture}-ebs"] : ["amzn-ami-*-amazon-ecs-optimized"]
   }
 }
 
@@ -53,112 +53,4 @@ resource "aws_iam_role_policy" "ecsServiceRolePolicy" {
 resource "aws_iam_instance_profile" "ecsInstanceProfile" {
   name = "ecsInstanceProfile-${random_id.code.hex}"
   role = aws_iam_role.ecsInstanceRole.name
-}
-
-/*
- * ECS related variables
- */
-
-// Required:
-variable "cluster_name" {}
-
-// Optional:
-
-variable "use_amazon_linux2" {
-  default     = false
-  description = "Use Amazon Linux 2 instead of Amazon Linux"
-}
-
-variable "ecsInstanceRoleAssumeRolePolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-variable "ecsInstancerolePolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecs:CreateCluster",
-        "ecs:DeregisterContainerInstance",
-        "ecs:DiscoverPollEndpoint",
-        "ecs:Poll",
-        "ecs:RegisterContainerInstance",
-        "ecs:StartTelemetrySession",
-        "ecs:Submit*",
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-variable "ecsServiceRoleAssumeRolePolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-variable "ecsServiceRolePolicy" {
-  default = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:AuthorizeSecurityGroupIngress",
-        "ec2:Describe*",
-        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-        "elasticloadbalancing:DeregisterTargets",
-        "elasticloadbalancing:Describe*",
-        "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-        "elasticloadbalancing:RegisterTargets"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
 }
