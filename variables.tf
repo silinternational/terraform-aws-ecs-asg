@@ -1,57 +1,57 @@
-/*
- * ASG related variables
- */
+variable "cluster_name" {
+  type = string
+}
 
-// Required:
 variable "security_groups" {
-  description = "List of security groups to place instances into"
-  type        = list(string)
+  type = list(string)
 }
 
 variable "subnet_ids" {
-  description = "List of VPC Subnet IDs to place instances into"
-  type        = list(string)
+  type = list(string)
 }
 
-// Optional:
 variable "instance_type" {
-  default     = "t2.micro"
-  description = "See: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#AvailableInstanceTypes"
+  default = "t2.micro"
 }
 
 variable "user_data" {
-  description = "Bash code for inclusion as user_data on instances. By default contains minimum for registering with ECS cluster"
-  default     = "false"
+  type    = string
+  default = "false"
 }
 
 variable "root_volume_size" {
-  default = "8"
+  type    = number
+  default = 8
 }
 
 variable "min_size" {
-  default = "1"
+  type    = number
+  default = 1
 }
 
 variable "max_size" {
-  default = "5"
+  type    = number
+  default = 5
 }
 
 variable "health_check_type" {
+  type    = string
   default = "EC2"
 }
 
 variable "health_check_grace_period" {
-  default = "300"
+  type    = number
+  default = 300
 }
 
 variable "default_cooldown" {
-  default = "30"
+  type    = number
+  default = 30
 }
 
 variable "termination_policies" {
-  type        = list(string)
-  default     = ["Default"]
-  description = "The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, Default."
+  type    = list(string)
+  default = ["Default"]
 }
 
 variable "protect_from_scale_in" {
@@ -59,181 +59,78 @@ variable "protect_from_scale_in" {
 }
 
 variable "tags" {
-  type        = list(object({ key = string, value = string, propagate_at_launch = bool }))
-  description = "List of maps with keys: 'key', 'value', and 'propagate_at_launch'"
+  type = list(object({ key = string, value = string, propagate_at_launch = bool }))
 
   default = [
     {
-      key                 = "created_by"
-      value               = "terraform"
+      key                 = "Created By"
+      value               = "Terraform"
       propagate_at_launch = true
     },
   ]
 }
 
 variable "scaling_adjustment_up" {
-  default     = "1"
-  description = "How many instances to scale up by when triggered"
+  type    = number
+  default = 1
 }
 
 variable "scaling_adjustment_down" {
-  default     = "-1"
-  description = "How many instances to scale down by when triggered"
+  type    = number
+  default = -1
 }
 
 variable "scaling_metric_name" {
-  default     = "CPUReservation"
-  description = "Options: CPUReservation or MemoryReservation"
+  type    = string
+  default = "CPUReservation"
 }
 
 variable "adjustment_type" {
-  default     = "ChangeInCapacity"
-  description = "Options: ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity"
+  type    = string
+  default = "ChangeInCapacity"
 }
 
 variable "policy_cooldown" {
-  default     = 300
-  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling activity can start."
+  type    = number
+  default = 300
 }
 
 variable "evaluation_periods" {
-  default     = "2"
-  description = "The number of periods over which data is compared to the specified threshold."
+  type    = number
+  default = 2
 }
 
 variable "alarm_period" {
-  default     = "120"
-  description = "The period in seconds over which the specified statistic is applied."
+  type    = number
+  default = 120
 }
 
 variable "alarm_threshold_up" {
-  default     = "100"
-  description = "The value against which the specified statistic is compared."
+  type    = number
+  default = 100
 }
 
 variable "alarm_threshold_down" {
-  default     = "50"
-  description = "The value against which the specified statistic is compared."
+  type    = number
+  default = 50
 }
 
 variable "alarm_actions_enabled" {
+  type    = bool
   default = true
 }
 
 variable "ssh_key_name" {
-  default     = ""
-  description = "Name of SSH key pair to use as default (ec2-user) user key"
+  type    = string
+  default = ""
 }
 
-/*
- * ECS related variables
- */
-
-// Required:
-variable "cluster_name" {}
-
-// Optional:
-
 variable "use_amazon_linux2" {
-  default     = false
-  description = "Use Amazon Linux 2 instead of Amazon Linux"
+  type    = bool
+  default = true
 }
 
 variable "ami_architecture" {
-  default     = "x86_64"
-  description = "The architecture of the ECS optimized Amazon Linux 2 AMI used"
-}
-
-variable "ecsInstanceRoleAssumeRolePolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-variable "ecsInstancerolePolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecs:CreateCluster",
-        "ecs:DeregisterContainerInstance",
-        "ecs:DiscoverPollEndpoint",
-        "ecs:Poll",
-        "ecs:RegisterContainerInstance",
-        "ecs:StartTelemetrySession",
-        "ecs:Submit*",
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
-}
-
-variable "ecsServiceRoleAssumeRolePolicy" {
-  type = string
-
-  default = <<EOF
-{
-  "Version": "2008-10-17",
-  "Statement": [
-    {
-      "Sid": "",
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ecs.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-variable "ecsServiceRolePolicy" {
-  default = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:AuthorizeSecurityGroupIngress",
-        "ec2:Describe*",
-        "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-        "elasticloadbalancing:DeregisterTargets",
-        "elasticloadbalancing:Describe*",
-        "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-        "elasticloadbalancing:RegisterTargets"
-      ],
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  type    = string
+  default = "x86_64"
 }

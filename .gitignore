@@ -1,2 +1,5 @@
 .idea/
 .terraform/
+
+# amzn2-ami-ecs-hvm-2.0.20210413-arm64-ebs
+# amzn2-ami-ecs-hvm-2.0.20210504-arm64-ebs
