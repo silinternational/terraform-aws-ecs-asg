@@ -1,17 +1,11 @@
-/*
- * Generate user_data from template file
- */
 data "template_file" "user_data" {
-  template = file("${path.module}/default-user-data.sh")
+  template = file("${path.module}/files/userdata/default-user-data.sh")
 
   vars = {
     ecs_cluster_name = var.cluster_name
   }
 }
 
-/*
- * Create Launch Configuration
- */
 resource "aws_launch_configuration" "lc" {
   image_id             = data.aws_ami.ecs_ami.id
   name_prefix          = var.cluster_name
@@ -30,9 +24,6 @@ resource "aws_launch_configuration" "lc" {
   }
 }
 
-/*
- * Create Auto-Scaling Group
- */
 resource "aws_autoscaling_group" "asg" {
   name                      = var.cluster_name
   vpc_zone_identifier       = var.subnet_ids
@@ -45,9 +36,11 @@ resource "aws_autoscaling_group" "asg" {
   launch_configuration      = aws_launch_configuration.lc.id
 
   tags = concat(
-    list(
-      map("key", "ecs_cluster", "value", var.cluster_name, "propagate_at_launch", true)
-    ),
+    [{
+      key                 = "ecs_cluster"
+      value               = var.cluster_name
+      propagate_at_launch = true
+    }],
     var.tags
   )
 
@@ -58,9 +51,6 @@ resource "aws_autoscaling_group" "asg" {
   }
 }
 
-/*
- * Create autoscaling policies
- */
 resource "aws_autoscaling_policy" "up" {
   name                   = "${var.cluster_name}-scaleUp"
   scaling_adjustment     = var.scaling_adjustment_up
@@ -81,9 +71,6 @@ resource "aws_autoscaling_policy" "down" {
   count                  = var.alarm_actions_enabled ? 1 : 0
 }
 
-/*
- * Create CloudWatch alarms to trigger scaling of ASG
- */
 resource "aws_cloudwatch_metric_alarm" "scaleUp" {
   alarm_name          = "${var.cluster_name}-scaleUp"
   alarm_description   = "ECS cluster scaling metric above threshold"
