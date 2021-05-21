@@ -1,17 +1,11 @@
-/*
- * Generate user_data from template file
- */
 data "template_file" "user_data" {
-  template = file("${path.module}/default-user-data.sh")
+  template = file("${path.module}/files/userdata/default-user-data.sh")
 
   vars = {
     ecs_cluster_name = var.cluster_name
   }
 }
 
-/*
- * Create Launch Configuration
- */
 resource "aws_launch_configuration" "lc" {
   image_id             = data.aws_ami.ecs_ami.id
   name_prefix          = var.cluster_name
@@ -30,11 +24,8 @@ resource "aws_launch_configuration" "lc" {
   }
 }
 
-/*
- * Create Auto-Scaling Group
- */
 resource "aws_autoscaling_group" "asg" {
-  name                      = var.cluster_name
+  name_prefix               = var.cluster_name
   vpc_zone_identifier       = var.subnet_ids
   min_size                  = var.min_size
   max_size                  = var.max_size
@@ -45,9 +36,11 @@ resource "aws_autoscaling_group" "asg" {
   launch_configuration      = aws_launch_configuration.lc.id
 
   tags = concat(
-    list(
-      map("key", "ecs_cluster", "value", var.cluster_name, "propagate_at_launch", true)
-    ),
+    [{
+      key                 = "ecs_cluster"
+      value               = var.cluster_name
+      propagate_at_launch = true
+    }],
     var.tags
   )
 
@@ -58,9 +51,6 @@ resource "aws_autoscaling_group" "asg" {
   }
 }
 
-/*
- * Create autoscaling policies
- */
 resource "aws_autoscaling_policy" "up" {
   name                   = "${var.cluster_name}-scaleUp"
   scaling_adjustment     = var.scaling_adjustment_up
@@ -81,9 +71,6 @@ resource "aws_autoscaling_policy" "down" {
   count                  = var.alarm_actions_enabled ? 1 : 0
 }
 
-/*
- * Create CloudWatch alarms to trigger scaling of ASG
- */
 resource "aws_cloudwatch_metric_alarm" "scaleUp" {
   alarm_name          = "${var.cluster_name}-scaleUp"
   alarm_description   = "ECS cluster scaling metric above threshold"
@@ -120,131 +107,4 @@ resource "aws_cloudwatch_metric_alarm" "scaleDown" {
   dimensions = {
     ClusterName = var.cluster_name
   }
-}
-
-/*
- * ASG related variables
- */
-
-// Required:
-variable "security_groups" {
-  description = "List of security groups to place instances into"
-  type        = list(string)
-}
-
-variable "subnet_ids" {
-  description = "List of VPC Subnet IDs to place instances into"
-  type        = list(string)
-}
-
-// Optional:
-variable "instance_type" {
-  default     = "t2.micro"
-  description = "See: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#AvailableInstanceTypes"
-}
-
-variable "user_data" {
-  description = "Bash code for inclusion as user_data on instances. By default contains minimum for registering with ECS cluster"
-  default     = "false"
-}
-
-variable "root_volume_size" {
-  default = "8"
-}
-
-variable "min_size" {
-  default = "1"
-}
-
-variable "max_size" {
-  default = "5"
-}
-
-variable "health_check_type" {
-  default = "EC2"
-}
-
-variable "health_check_grace_period" {
-  default = "300"
-}
-
-variable "default_cooldown" {
-  default = "30"
-}
-
-variable "termination_policies" {
-  type        = list(string)
-  default     = ["Default"]
-  description = "The allowed values are OldestInstance, NewestInstance, OldestLaunchConfiguration, ClosestToNextInstanceHour, Default."
-}
-
-variable "protect_from_scale_in" {
-  default = false
-}
-
-variable "tags" {
-  type        = list(object({ key = string, value = string, propagate_at_launch = bool }))
-  description = "List of maps with keys: 'key', 'value', and 'propagate_at_launch'"
-
-  default = [
-    {
-      key                 = "created_by"
-      value               = "terraform"
-      propagate_at_launch = true
-    },
-  ]
-}
-
-variable "scaling_adjustment_up" {
-  default     = "1"
-  description = "How many instances to scale up by when triggered"
-}
-
-variable "scaling_adjustment_down" {
-  default     = "-1"
-  description = "How many instances to scale down by when triggered"
-}
-
-variable "scaling_metric_name" {
-  default     = "CPUReservation"
-  description = "Options: CPUReservation or MemoryReservation"
-}
-
-variable "adjustment_type" {
-  default     = "ChangeInCapacity"
-  description = "Options: ChangeInCapacity, ExactCapacity, and PercentChangeInCapacity"
-}
-
-variable "policy_cooldown" {
-  default     = 300
-  description = "The amount of time, in seconds, after a scaling activity completes and before the next scaling activity can start."
-}
-
-variable "evaluation_periods" {
-  default     = "2"
-  description = "The number of periods over which data is compared to the specified threshold."
-}
-
-variable "alarm_period" {
-  default     = "120"
-  description = "The period in seconds over which the specified statistic is applied."
-}
-
-variable "alarm_threshold_up" {
-  default     = "100"
-  description = "The value against which the specified statistic is compared."
-}
-
-variable "alarm_threshold_down" {
-  default     = "50"
-  description = "The value against which the specified statistic is compared."
-}
-
-variable "alarm_actions_enabled" {
-  default = true
-}
-
-variable "ssh_key_name" {
-  default     = ""
-  description = "Name of SSH key pair to use as default (ec2-user) user key"
 }
