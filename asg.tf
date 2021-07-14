@@ -45,9 +45,13 @@ resource "aws_autoscaling_group" "asg" {
   launch_configuration      = aws_launch_configuration.lc.id
 
   tags = concat(
-    list(
-      map("key", "ecs_cluster", "value", var.cluster_name, "propagate_at_launch", true)
-    ),
+    [
+      {
+        key                 = "ecs_cluster"
+        value               = var.cluster_name
+        propagate_at_launch = true
+      },
+    ],
     var.tags
   )
 
