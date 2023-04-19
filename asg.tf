@@ -44,16 +44,21 @@ resource "aws_autoscaling_group" "asg" {
   termination_policies      = var.termination_policies
   launch_configuration      = aws_launch_configuration.lc.id
 
-  tags = concat(
-    [
-      {
-        key                 = "ecs_cluster"
-        value               = var.cluster_name
-        propagate_at_launch = true
-      },
-    ],
-    var.tags
-  )
+  tag {
+    key                 = "ecs_cluster"
+    value               = var.cluster_name
+    propagate_at_launch = true
+  }
+
+  dynamic "tag" {
+    for_each = var.tags
+
+    content {
+      key                 = tag.value.key
+      value               = tag.value.value
+      propagate_at_launch = tag.value.propagate_at_launch
+    }
+  }
 
   protect_from_scale_in = var.protect_from_scale_in
 
