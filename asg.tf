@@ -19,7 +19,7 @@ resource "aws_launch_template" "lt" {
   image_id               = data.aws_ami.ecs_ami.id
   instance_type          = var.instance_type
   key_name               = var.ssh_key_name
-  vpc_security_group_ids = var.security_groups
+  vpc_security_group_ids = var.security_group_ids
   user_data              = base64encode(var.user_data != "false" ? var.user_data : template_file(user_data, {}))
 
   iam_instance_profile {

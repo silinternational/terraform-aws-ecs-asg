@@ -3,8 +3,8 @@
  */
 
 // Required:
-variable "security_groups" {
-  description = "List of security groups to place instances into"
+variable "security_group_ids" {
+  description = "List of security group IDs to place instances into"
   type        = list(string)
 }
 
