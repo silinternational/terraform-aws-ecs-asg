@@ -10,23 +10,34 @@ data "template_file" "user_data" {
 }
 
 /*
- * Create Launch Configuration
+ * Create Launch Template
  */
-resource "aws_launch_configuration" "lc" {
-  image_id             = data.aws_ami.ecs_ami.id
-  name_prefix          = var.cluster_name
-  instance_type        = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.ecsInstanceProfile.id
-  security_groups      = var.security_groups
-  user_data            = var.user_data != "false" ? var.user_data : data.template_file.user_data.rendered
-  key_name             = var.ssh_key_name
+resource "aws_launch_template" "lt" {
+  default_version        = 1
+  ebs_optimized          = false
+  name                   = "lt-${var.cluster_name}"
+  image_id               = data.aws_ami.ecs_ami.id
+  instance_type          = var.instance_type
+  key_name               = var.ssh_key_name
+  vpc_security_group_ids = var.security_groups
+  user_data              = base64encode(var.user_data != "false" ? var.user_data : template_file(user_data, {}))
 
-  root_block_device {
-    volume_size = var.root_volume_size
+  iam_instance_profile {
+    name = aws_iam_instance_profile.ecsInstanceProfile.id
   }
 
-  lifecycle {
-    create_before_destroy = true
+  monitoring {
+    enabled = true
+  }
+
+  tag_specifications {
+    resource_type = "network-interface"
+    tags          = var.tags
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags          = var.tags
   }
 }
 
@@ -42,7 +53,7 @@ resource "aws_autoscaling_group" "asg" {
   health_check_grace_period = var.health_check_grace_period
   default_cooldown          = var.default_cooldown
   termination_policies      = var.termination_policies
-  launch_configuration      = aws_launch_configuration.lc.id
+  launch_template           = aws_launch_template.lt.id
 
   tag {
     key                 = "ecs_cluster"
@@ -54,9 +65,9 @@ resource "aws_autoscaling_group" "asg" {
     for_each = var.tags
 
     content {
-      key                 = tag.value.key
-      value               = tag.value.value
-      propagate_at_launch = tag.value.propagate_at_launch
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
     }
   }
 

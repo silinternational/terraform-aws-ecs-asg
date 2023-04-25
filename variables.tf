@@ -24,10 +24,6 @@ variable "user_data" {
   default     = "false"
 }
 
-variable "root_volume_size" {
-  default = "8"
-}
-
 variable "min_size" {
   default = "1"
 }
@@ -59,16 +55,12 @@ variable "protect_from_scale_in" {
 }
 
 variable "tags" {
-  type        = list(object({ key = string, value = string, propagate_at_launch = bool }))
-  description = "List of maps with keys: 'key', 'value', and 'propagate_at_launch'"
+  type        = map(string)
+  description = "map of tags to add to the ASG"
 
-  default = [
-    {
-      key                 = "created_by"
-      value               = "terraform"
-      propagate_at_launch = true
-    },
-  ]
+  default = {
+    managed_by = "terraform"
+  }
 }
 
 variable "scaling_adjustment_up" {
