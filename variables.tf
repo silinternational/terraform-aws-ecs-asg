@@ -56,7 +56,7 @@ variable "protect_from_scale_in" {
 
 variable "tags" {
   type        = map(string)
-  description = "map of tags to add to the ASG"
+  description = "map of tags to add to created resources"
 
   default = {
     managed_by = "terraform"
