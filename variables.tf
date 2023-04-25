@@ -71,6 +71,18 @@ variable "tags" {
   ]
 }
 
+variable "tags_propagated" {
+  type        = map(string)
+  description = "Map of tags propagated at launch"
+  default     = {}
+}
+
+variable "tags_not_propagated" {
+  type        = map(string)
+  description = "Map of tags not propagated at launch"
+  default     = {}
+}
+
 variable "scaling_adjustment_up" {
   default     = "1"
   description = "How many instances to scale up by when triggered"

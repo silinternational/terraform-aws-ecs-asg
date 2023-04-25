@@ -60,6 +60,26 @@ resource "aws_autoscaling_group" "asg" {
     }
   }
 
+  dynamic "tag" {
+    for_each = var.tags_propagated
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
+
+  dynamic "tag" {
+    for_each = var.tags_not_propagated
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = false
+    }
+  }
+
   protect_from_scale_in = var.protect_from_scale_in
 
   lifecycle {
