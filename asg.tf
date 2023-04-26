@@ -1,12 +1,10 @@
 /*
  * Generate user_data from template file
  */
-data "template_file" "user_data" {
-  template = file("${path.module}/default-user-data.sh")
-
-  vars = {
+locals {
+  user_data = templatefile("${path.module}/default-user-data.sh", {
     ecs_cluster_name = var.cluster_name
-  }
+  })
 }
 
 /*
@@ -20,7 +18,7 @@ resource "aws_launch_template" "lt" {
   instance_type          = var.instance_type
   key_name               = var.ssh_key_name
   vpc_security_group_ids = var.security_group_ids
-  user_data              = base64encode(var.user_data != "false" ? var.user_data : template_file(user_data, {}))
+  user_data              = base64encode(var.user_data != "false" ? var.user_data : local.user_data)
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecsInstanceProfile.id
