@@ -6,8 +6,8 @@ output "asg_arn" {
   value = aws_autoscaling_group.asg.arn
 }
 
-output "asg_launch_configuration" {
-  value = aws_autoscaling_group.asg.launch_configuration
+output "asg_launch_template_id" {
+  value = aws_launch_template.lt.id
 }
 
 output "ecs_ami_id" {

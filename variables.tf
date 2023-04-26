@@ -3,8 +3,8 @@
  */
 
 // Required:
-variable "security_groups" {
-  description = "List of security groups to place instances into"
+variable "security_group_ids" {
+  description = "List of security group IDs to place instances into"
   type        = list(string)
 }
 
@@ -22,10 +22,6 @@ variable "instance_type" {
 variable "user_data" {
   description = "Bash code for inclusion as user_data on instances. By default contains minimum for registering with ECS cluster"
   default     = "false"
-}
-
-variable "root_volume_size" {
-  default = "8"
 }
 
 variable "min_size" {
@@ -59,16 +55,12 @@ variable "protect_from_scale_in" {
 }
 
 variable "tags" {
-  type        = list(object({ key = string, value = string, propagate_at_launch = bool }))
-  description = "List of maps with keys: 'key', 'value', and 'propagate_at_launch'"
+  type        = map(string)
+  description = "map of tags to add to created resources"
 
-  default = [
-    {
-      key                 = "created_by"
-      value               = "terraform"
-      propagate_at_launch = true
-    },
-  ]
+  default = {
+    managed_by = "terraform"
+  }
 }
 
 variable "scaling_adjustment_up" {
