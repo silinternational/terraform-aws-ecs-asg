@@ -51,7 +51,11 @@ resource "aws_autoscaling_group" "asg" {
   health_check_grace_period = var.health_check_grace_period
   default_cooldown          = var.default_cooldown
   termination_policies      = var.termination_policies
-  launch_template           = aws_launch_template.lt.id
+
+  launch_template {
+    id      = aws_launch_template.lt.id
+    version = "$Latest"
+  }
 
   tag {
     key                 = "ecs_cluster"
