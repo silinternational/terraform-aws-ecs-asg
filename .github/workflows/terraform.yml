@@ -7,29 +7,20 @@ name: 'Terraform'
 
 on:
   push:
-  pull_request:
-
-permissions:
-  contents: read
 
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-22.04
 
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Install the latest version of Terraform CLI
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@v3
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
