@@ -16,6 +16,7 @@ module "full" {
   alarm_threshold_up              = "100"
   cluster_name                    = "cluster"
   default_cooldown                = "30"
+  desired_capacity                = "1"
   ecsInstanceRoleAssumeRolePolicy = "{}"
   ecsInstancerolePolicy           = "{}"
   ecsServiceRoleAssumeRolePolicy  = "{}"
