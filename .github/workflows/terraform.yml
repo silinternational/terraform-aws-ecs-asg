@@ -11,7 +11,7 @@ on:
 jobs:
   terraform:
     name: 'Terraform'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     # Checkout the repository to the GitHub Actions runner
