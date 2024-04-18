@@ -37,6 +37,10 @@ resource "aws_launch_template" "lt" {
     resource_type = "volume"
     tags          = var.tags
   }
+
+  network_interfaces {
+    ipv6_address_count = var.enable_ipv6 ? 1 : 0
+  }
 }
 
 /*

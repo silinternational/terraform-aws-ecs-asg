@@ -122,6 +122,13 @@ variable "ssh_key_name" {
   description = "Name of SSH key pair to use as default (ec2-user) user key"
 }
 
+variable "enable_ipv6" {
+  description = "set to true to add an IPv6 IP address to ASG-created instances"
+  type        = bool
+  default     = false
+}
+
+
 /*
  * ECS related variables
  */
