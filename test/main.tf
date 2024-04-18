@@ -39,4 +39,5 @@ module "full" {
   termination_policies            = ["Default"]
   use_amazon_linux2               = false
   user_data                       = "false"
+  enable_ipv6                     = true
 }
