@@ -11,14 +11,13 @@ locals {
  * Create Launch Template
  */
 resource "aws_launch_template" "lt" {
-  default_version        = 1
-  ebs_optimized          = false
-  name                   = "lt-${var.cluster_name}"
-  image_id               = data.aws_ami.ecs_ami.id
-  instance_type          = var.instance_type
-  key_name               = var.ssh_key_name
-  vpc_security_group_ids = var.security_group_ids
-  user_data              = base64encode(var.user_data != "false" ? var.user_data : local.user_data)
+  default_version = 1
+  ebs_optimized   = false
+  name            = "lt-${var.cluster_name}"
+  image_id        = data.aws_ami.ecs_ami.id
+  instance_type   = var.instance_type
+  key_name        = var.ssh_key_name
+  user_data       = base64encode(var.user_data != "false" ? var.user_data : local.user_data)
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecsInstanceProfile.id
@@ -40,6 +39,7 @@ resource "aws_launch_template" "lt" {
 
   network_interfaces {
     ipv6_address_count = var.enable_ipv6 ? 1 : 0
+    security_groups    = var.security_group_ids
   }
 }
 
