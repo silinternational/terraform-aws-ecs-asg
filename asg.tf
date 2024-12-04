@@ -24,7 +24,7 @@ resource "aws_launch_template" "lt" {
   }
 
   monitoring {
-    enabled = true
+    enabled = var.enable_ec2_detailed_monitoring
   }
 
   tag_specifications {
