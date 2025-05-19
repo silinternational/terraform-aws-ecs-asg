@@ -147,6 +147,12 @@ variable "use_amazon_linux2" {
   description = "Use Amazon Linux 2 instead of Amazon Linux"
 }
 
+variable "use_amazon_linux2023" {
+  description = "Use Amazon Linux 2023 AMI"
+  type        = bool
+  default     = true
+}
+
 variable "ecsInstanceRoleAssumeRolePolicy" {
   type = string
 
