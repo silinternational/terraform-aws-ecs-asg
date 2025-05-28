@@ -142,10 +142,6 @@ variable "enable_ec2_detailed_monitoring" {
 variable "cluster_name" {}
 
 // Optional:
-variable "use_amazon_linux2" {
-  default     = false
-  description = "Use Amazon Linux 2 instead of Amazon Linux"
-}
 
 variable "use_amazon_linux2023" {
   description = "Use Amazon Linux 2023 AMI"
