@@ -37,7 +37,7 @@ module "full" {
   subnet_ids                      = ["subnet-01234567", "subnet-76543210"]
   tags                            = { foo : "bar" }
   termination_policies            = ["Default"]
-  use_amazon_linux2               = false
+  use_amazon_linux2023            = true
   user_data                       = "false"
   enable_ipv6                     = true
 }
