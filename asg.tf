@@ -11,7 +11,6 @@ locals {
  * Create Launch Template
  */
 resource "aws_launch_template" "lt" {
-  default_version = 1
   ebs_optimized   = false
   name            = "lt-${var.cluster_name}"
   image_id        = data.aws_ami.ecs_ami.id
