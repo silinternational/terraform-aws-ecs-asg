@@ -3,7 +3,8 @@
  */
 locals {
   user_data = templatefile("${path.module}/default-user-data.sh", {
-    ecs_cluster_name = var.cluster_name
+    ecs_cluster_name     = var.cluster_name
+    additional_user_data = var.additional_user_data
   })
 }
 

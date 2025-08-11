@@ -24,6 +24,12 @@ variable "user_data" {
   default     = "false"
 }
 
+variable "additional_user_data" {
+  description = "Bash code to APPEND to the default EC2 user_data. NOTE: Use this OR `user_data`, not both."
+  type        = string
+  default     = ""
+}
+
 variable "min_size" {
   default = "1"
 }
