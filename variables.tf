@@ -24,6 +24,15 @@ variable "user_data" {
   default     = "false"
 }
 
+variable "additional_user_data" {
+  description = <<-EOT
+    Bash code to APPEND to the default EC2 user_data. NOTE: If `user_data` is
+    specified, this will be ignored.
+  EOT
+  type        = string
+  default     = ""
+}
+
 variable "min_size" {
   default = "1"
 }

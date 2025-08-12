@@ -39,5 +39,6 @@ module "full" {
   termination_policies            = ["Default"]
   use_amazon_linux2023            = true
   user_data                       = "false"
+  additional_user_data            = ""
   enable_ipv6                     = true
 }
