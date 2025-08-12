@@ -11,12 +11,12 @@ locals {
  * Create Launch Template
  */
 resource "aws_launch_template" "lt" {
-  ebs_optimized   = false
-  name            = "lt-${var.cluster_name}"
-  image_id        = data.aws_ami.ecs_ami.id
-  instance_type   = var.instance_type
-  key_name        = var.ssh_key_name
-  user_data       = base64encode(var.user_data != "false" ? var.user_data : local.user_data)
+  ebs_optimized = false
+  name          = "lt-${var.cluster_name}"
+  image_id      = data.aws_ami.ecs_ami.id
+  instance_type = var.instance_type
+  key_name      = var.ssh_key_name
+  user_data     = base64encode(var.user_data != "false" ? var.user_data : local.user_data)
 
   iam_instance_profile {
     name = aws_iam_instance_profile.ecsInstanceProfile.id
