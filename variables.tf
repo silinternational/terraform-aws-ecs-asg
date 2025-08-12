@@ -25,7 +25,10 @@ variable "user_data" {
 }
 
 variable "additional_user_data" {
-  description = "Bash code to APPEND to the default EC2 user_data. NOTE: Use this OR `user_data`, not both."
+  description = <<-EOT
+    Bash code to APPEND to the default EC2 user_data. NOTE: If `user_data` is
+    specified, this will be ignored.
+  EOT
   type        = string
   default     = ""
 }
